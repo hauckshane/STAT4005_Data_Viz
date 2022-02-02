@@ -1,0 +1,66 @@
+---
+title: "Quiz 2 In Classs"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(here)
+df <- read_excel(here("data/slu_graduates_17_21.xlsx"))
+
+## fixes error in the data
+df <- df %>% mutate(across(everything(),
+                           .fns = ~replace(., . ==  "STATS" , "STAT")))
+
+df_long <- df %>% pivot_longer(3:8, names_to = "type", values_to = "discipline")
+
+df_major <- df_long %>% 
+  filter(type == "major1" | type == "major2" | type == "major3")
+```
+
+
+
+Question 1 (10 points). Make a lollipop chart of the counts of the top 10 most popular majors at SLU in the past five years, ordering the “lollies” from the most popular major to the 10th most popular major.
+
+```{r}
+plot1_df <- df_major %>% group_by(discipline) %>%
+  summarise(total = n()) %>%
+  arrange(desc(total)) %>% 
+  filter(!is.na(discipline)) %>%
+  mutate(discipline = fct_reorder(discipline, total)) %>%
+  slice(0:10)
+
+ggplot(plot1_df, aes(x = discipline, y = total)) +
+  geom_point() +
+  geom_segment(aes(x = discipline, xend = discipline, y = 0, yend= total)) +
+  coord_flip()
+```
+
+
+Question 2 (10 points). Make the plot from Question 1 of the take-home quiz, but, instead of plotting the other majors of all of the STAT majors in the data set, plot the counts of the minors of all of the STAT majors.
+
+```{r}
+plotdf <- df %>% filter(minor1 == "STAT" | minor2 == "STAT" | minor3 == "STAT") %>%
+  pivot_longer(cols = c(minor1, minor2, minor3), values_to = "minor") %>%
+  select(minor) %>%
+  filter(minor != "STAT" & !is.na(minor)) %>%
+  group_by(minor) %>%
+  summarise(ntotal = n()) %>%
+  arrange(desc(ntotal)) %>%
+  mutate(minor = fct_reorder(minor, ntotal))
+
+ggplot(plotdf, aes(x = minor, y = ntotal)) +
+  geom_col() +
+  coord_flip()
+```
+
+
+Question 3 (5 points). Push your .Rmd and knitted .html file to GitHub, writing a one sentence commit message for your push.
+
+Extra Credit (1 point). For just a single point of extra credit (the purpose of this is mostly to give anyone who finishes the quiz early something to work on), figure out the “average” number of majors SLU students had over the past 5 years. For example, if the data only had three students: two single majors and one double major, the “average” number of majors would be (1 + 1 + 2) / 4 = 1.33 majors.
