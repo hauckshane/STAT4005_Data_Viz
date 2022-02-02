@@ -64,3 +64,12 @@ ggplot(plotdf, aes(x = minor, y = ntotal)) +
 Question 3 (5 points). Push your .Rmd and knitted .html file to GitHub, writing a one sentence commit message for your push.
 
 Extra Credit (1 point). For just a single point of extra credit (the purpose of this is mostly to give anyone who finishes the quiz early something to work on), figure out the “average” number of majors SLU students had over the past 5 years. For example, if the data only had three students: two single majors and one double major, the “average” number of majors would be (1 + 1 + 2) / 4 = 1.33 majors.
+
+```{r}
+df_long %>% filter(!is.na(discipline)) %>%
+  group_by(type) %>%
+  summarise(total = n()) %>%
+  slice(c(1:3)) 
+(2729 + 951 * 2 + 9 * 3) / (2729 + 951 + 9)
+```
+The average number of majors is 1.26
