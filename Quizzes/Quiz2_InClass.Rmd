@@ -69,7 +69,7 @@ Extra Credit (1 point). For just a single point of extra credit (the purpose of 
 df_long %>% filter(!is.na(discipline)) %>%
   group_by(type) %>%
   summarise(total = n()) %>%
-  slice(c(1:3)) 
+  slice(c(1:3))  
 (2729 + 951 * 2 + 9 * 3) / (2729 + 951 + 9)
 ```
 The average number of majors is 1.26

@@ -223,7 +223,7 @@ ggplot(plotdf, aes(x = minor, y = ntotal)) +
 <pre class="r"><code>df_long %&gt;% filter(!is.na(discipline)) %&gt;%
   group_by(type) %&gt;%
   summarise(total = n()) %&gt;%
-  slice(c(1:3)) </code></pre>
+  slice(c(1:3))  </code></pre>
 <pre><code>## # A tibble: 3 x 2
 ##   type   total
 ##   &lt;chr&gt;  &lt;int&gt;

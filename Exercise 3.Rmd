@@ -1,0 +1,62 @@
+---
+title: "Exercises 3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+8.1 General Ethical Guidelines
+
+8.1.1 Excluding Data
+
+Exercise 1
+Examine the data set on on page 6 of this link. The graph now includes all of the data points. However, explain why this graph is still not a good visualization of the data set. What could be done to improve the graph? Hint: ?geom_jitter().
+
+This graph is still not a good visulization of the data set because there are 23 different flights in the data set but the graph only shows 13 different points. This is likely because the remaining 10 points overlap with points that are already plotted therefore they aren't visible to the viewer. A way could fix this would be to use geom_jitter() which will add a small amount of random variation to the location of each point which will allow you to see the trends of the graph slightly better as the places where there were overlaps will have many more points to points where there weren't.
+
+
+8.1.2 General Principles
+
+Exercise 1. 
+Pick 1 of the 3 examples (stand your ground, climate change, or covid cases), and summarize why that graphic is not ethical. Make sure to include the context that the graph was created in from Section 8.3 in your explanation.
+
+When Florida legislature passed the controversial "Stand Your Ground" law, an infamous graph was commonly seen supporting the creation of the law. At first glance it looks like the number of murders take a sharp decrease after the law is put in place but after closer examination you see that the y-axis is flipped so it is actually the opposite. The graph is very misleading the average person who see it. If a person is just scrolling through their social media feed and sees this graph they would likely get the wrong idea about this law. They are wrongfully using data to impose a message that is not true, this is very unethical.
+
+Exercise 2.
+Choose 2 of the 12 principles of ethical practice of data science and come up a (possibly hypothetical) scenario where each of your two chosen principles would come into play.
+
+- Use data to improve life for our users, customers, organizations, and communities.
+- Present our work in ways that empower others to make better informed decisions. 
+
+Typically when working as a data scientist you are likely to be working in some sort of team for some sort of company. When you analyze that data you are likely looking for something that will improve something. You need to be able to present your findings to the other individuals working in your team in way that the decisions they makre will be the best for the individuals using the product. For example, say you are working with a team on making a health app. You will likely need to pitch the idea to put some type of data on the app that will be overall helpful for the users. Therefore when you need to present the data in a way that is coherent to say the engineers making sure they do the proper things when implementing that part of the app.
+
+Exercise 3a. Find a graphic on the Internet that shows evidence that the Covid vaccine has “worked.”
+
+https://www.ft.com/__origami/service/image/v2/images/raw/https%3A%2F%2Fd6c748xw2pzm8.cloudfront.net%2Fprod%2F53a481e0-a1fd-11eb-bd34-09e3a6c6fe4e-standard.png?dpr=1&fit=scale-down&quality=highest&source=next&width=700
+
+Exercise 3b. Find a graphic on the Internet that shows evidence that the Covid vaccine has “not worked.”
+
+https://i0.wp.com/directorsblog.nih.gov/wp-content/uploads/2021/12/Booster-vs.-Omicron2.jpg?resize=430%2C334&ssl=1
+
+
+8.2 Sensitive Data Visualizations
+
+Exercise 1. Which of the two visualizations better humanizes the victims of lynching? Why?
+
+I would say that probably the second map better humanizes the victims of lynching because there it looks like almost every point in the graph has a little bit of detail about the certain lynching whereas in the first map most of the points are just grouped by states and there is only a few points which has some information.
+
+Exercise 2. Suppose that you want to humanize the victims more in a static, non-interactive graph. Brainstorm ways that you could achieve this.
+
+Perhaps you could create a bar plot grouped by state and instead of the bars being bars it's the names of the victims stacked on top of one another.
+
+Exercise 3. A deeper discussion of these sites appears in this paper. Read the Introduction section on TayTweets and write 3 major takeaways from this section.
+
+- An algorithm is value neutral and divorceable from human prejudice and malice. 
+- Digital humanists must adhere to a form of visualization ethics that considers how both choices about working with data and the rhetorical qualities of communication elements shape users' understandings of represented people and places. 
+- The goal of this visualization ethics should be "increasing understanding [for users] while minimizing harm" to represented people and places [Cairo 2014].
+
+Exercise 4. The authors of the book Data Feminism argue that “leveraging emotion” might help us better communicate with data. Read the first four paragraphs of Chapter 3 of the Data Feminism book. One example the authors use pertains to deaths from gun violence in the United States. Examine this animated chart. Explain how the chart uses emotion to convey the losses due to gun violence better than, for example, a statement that 11,356 people were killed from gun violence in 2018.
+
+This animated chart uses emotion that is more effective convey a message then a statement saying that 11,356 people were killed from gun violence because the animated chart shows example and all of the incidents look individualized or humanized rather than all of the incidents being linked together.
