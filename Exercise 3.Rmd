@@ -51,7 +51,7 @@ Exercise 2. Suppose that you want to humanize the victims more in a static, non-
 
 Perhaps you could create a bar plot grouped by state and instead of the bars being bars it's the names of the victims stacked on top of one another.
 
-Exercise 3. A deeper discussion of these sites appears in this paper. Read the Introduction section on TayTweets and write 3 major takeaways from this section.
+Exercise 3. A deeper discussion of these sites appears in this paper. Read the Introduction section on TayTweets and write 3 major takeaways from this section. 
 
 - An algorithm is value neutral and divorceable from human prejudice and malice. 
 - Digital humanists must adhere to a form of visualization ethics that considers how both choices about working with data and the rhetorical qualities of communication elements shape users' understandings of represented people and places. 

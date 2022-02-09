@@ -1,0 +1,33 @@
+---
+title: "03 Quiz Take Home"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+“All work presented is my own, and I have followed all rules for collaboration.”
+- Shane Hauck
+
+Question 1 (5 points). Consider the Challenger example in our course notes. Clearly, the graphic used to communicate the results is poorly made: it eliminates data points when it really should not. However, the engineers making the graph did not have “malicious intent:” they did not purposefully remove these data points to try to lie: it was a mistake. Is the visualization still unethical? Use principles from the Modern Data Science Readings to explain in a few sentences.
+
+I feel like the the visualization is not still unethical and instead it is ethical. I can debate that the points that were hidden in the graph were not the incidents that had a high damage index, therefore, they were not leaving bad things out of the graph but more or less the good things. I feel like this invokes the principle "Consider carefully the ethical implications of choices we make when using data, and the impacts of our work on individuals and society" because the ethical choices they made weren't bad ones that were ultimately going to get people hurt. I also feel like the engineers invoke the principle of "Be open to changing our methods and conclusions in response to new knowledge." I feel like that these engineers acknowledged the mistake they made with the graph and were opening to changing the way that the graph was created.
+
+
+Question 2 (4 points). Find a graphic online, other than any given in our course readings, that is unethical. Provide a link to your graphic and give a 2-3 sentence description explaining why that graphic is not ethical.
+
+https://miro.medium.com/max/723/1*yM0lXZ0294SRVlZGbJnYhQ.png
+
+This graph is unethical because of the distribution of the range of the x axis scale. The makers of the graph make it seem that the time between the gas prices last year and last week and the time between the gas prices of last week and today are exactly the same, this skews the view of the chart making it seem like the price of gas is not increasing at a fast rate because it is contrasted with a longer period of time.
+
+
+Question 3 (3 points). Explain, in your own words, what each of the following Git terms mean:
+
+commit: An update to the file you are working on.
+
+push: Uploading a file from your local repository to your GitHub's networks repository,
+
+pull: Bringing a file from your GitHub's network repository to your local repository.
+
+Question 4 (3 points). These three points are given if you successfully committed with a commit message and pushed your .Rmd and .html files to your GitHub account.
