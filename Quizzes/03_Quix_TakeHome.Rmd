@@ -6,7 +6,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+ 
 “All work presented is my own, and I have followed all rules for collaboration.”
 - Shane Hauck
 

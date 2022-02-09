@@ -1,0 +1,39 @@
+---
+title: "03 In Class"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+“All work presented is my own. I have not communicated with or worked with anyone else on this quiz.” 
+- Shane Hauck
+
+Question 1 (5 points). Suppose you do the following:
+
+You go to your GitHub site and make a change to the README file (adding a sentence, for example).
+In R Studio, you update one of your .Rmd files, adding a line of code and commit the file.
+You attempt to push the new file to your GitHub site.
+Once you get to the third step, you’ll get an error when you try to push. Why? What do you need to do first before you make the push in Step 3?
+
+You get an error because the file you are using will get pushed onto GitHub after you commit. You then need to make another change in your file (like adding a space) and then re save the file so you can then push it to your GitHub repository.
+
+Question 2 (6 points). Give 2 advantages of using Git and GitHub. These must be advantages that we discussed in class (so you should not simply google “advantages of Git” and give the first two things that pop up).
+
+- You are able to go back to previous versions of your code in case you make a mistake.
+- You are able to look back at your previous commits to see what you achieved at different periods of times. 
+
+Question 3 (6 points). Choose 1 of the 12 principles of the ethical practice of data science that you think is the most difficult to execute. Give a short, possibly hypothetical, example that illustrates how that principle could be difficult to follow.
+
+- "Help others to understand the most useful and appropriate applications of data to solve real-world problems."
+
+This principle could potentially be very difficult if for say you were working for a boss that new little to nothing about statistics and data science, it could potentially be a struggle to explain your findings to him as it is almost like you guys do not speak the same language.
+
+Question 4 (6 points). The authors of Data Feminism argued that data scientists should “embrace emotion,” not ignore it when building visuals. State the example that the authors used to show how emotion can be used to make a visual stronger. Then, give an argument against “embracing emotion.” In other words, give an argument that data visualizations should be devoid of emotion as much as possible, even if that’s not what you believe.
+
+The authors of Data Feminism used an example of people who died from gun violence and showed the age they died compared to the age they could have died and they did this in a animated graph that started with some examples of some names.
+
+Data visualizations should be devoid of emotions because the data itself has no emotion, it is simply just numbers. When presenting data the presenter should just be simply telling the truth about what the numbers say and leave out the emotion behind it because when it might be a sensitive topic people might get irrational and make a decision that is unjustifiable by the data.
+
+Question 5 (2 points). These two points are given for committing your .Rmd and .html files with a commit message correctly, and pushing them to your GitHub site.
