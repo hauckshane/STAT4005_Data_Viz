@@ -1,0 +1,111 @@
+---
+title: "Exercises 4"
+author: "Shane Hauck"
+date: "2/13/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+hpi_df <- read_csv("data/hpi-tidy.csv")
+hpi_df
+```
+
+Exericse 1. Make a map of a variable of your choosing. In coord_map(), use projection = "mercator", which is also the default (we will see in a later exercise that this probably is not the best choice).
+
+Hint: in ggplot2’s map_data() function, there is a built in map of the "world".
+
+Hint: You can read more about projections in Section 17.3.2 of Modern Data Science with R
+
+```{r}
+world_df <- ggplot2::map_data("world")
+world_full <- right_join(hpi_df, world_df, by = c("Country" = "region"))
+```
+
+
+```{r}
+ggplot(data = world_full,
+            mapping = aes(x = long, y = lat,
+                          group = group)) +
+  geom_polygon(color = "black", aes(fill = LifeExpectancy)) +
+  theme_void() +
+  coord_map(projection = "mercator") +
+  scale_fill_viridis_c()
+```
+
+
+Exercise 2. You may notice that the United States does not get coloured in your map. Examine this issue further and fix the map so that the United States is coloured.
+
+```{r}
+hpi_df <- hpi_df %>% mutate(Country = fct_recode(Country, USA = "United States of America")) 
+
+world_full <- right_join(hpi_df, world_df, by = c("Country" = "region"))
+ggplot(data = world_full,
+            mapping = aes(x = long, y = lat,
+                          group = group)) +
+  geom_polygon(color = "black", aes(fill = LifeExpectancy)) +
+  theme_void() +
+  coord_map(projection = "mercator") +
+  scale_fill_viridis_c()
+```
+
+
+Exercise 3. You may have noticed that there are two horizontal stripes across your map. This is an issue that drove me nuts! Check out this submitted issue on ggplot2’s GitHub page for the reason for the error as well as a fix. Use it to fix your plot.
+
+```{r}
+ggplot(data = world_full,
+            mapping = aes(x = long, y = lat,
+                          group = group)) +
+  geom_polygon(color = "black", aes(fill = LifeExpectancy)) +
+  theme_void() +
+  coord_map(projection = "mercator", xlim = c(-180, 180)) +
+  scale_fill_viridis_c()
+```
+
+
+Exercise 4. Read about Mercator projections in this blog post. What does this source say about the sizes of Greenland vs. Africa in a Mercator projection.
+
+The size of Greenland is 550% too big as it should be fitting into Africa 14 times.
+
+Exercise 5. Examine all of the different options for map projection with ?mapproject. Then, change the projection to "globular". Change the projection again to "gilbert". How does the relative size of Greenland to Africa change in the projections?
+
+```{r}
+ggplot(data = world_full,
+            mapping = aes(x = long, y = lat,
+                          group = group)) +
+  geom_polygon(color = "black", aes(fill = LifeExpectancy)) +
+  theme_void() +
+  coord_map(projection = "globular", xlim = c(-180, 180)) +
+  scale_fill_viridis_c()
+```
+
+```{r}
+ggplot(data = world_full,
+            mapping = aes(x = long, y = lat,
+                          group = group)) +
+  geom_polygon(color = "black", aes(fill = LifeExpectancy)) +
+  theme_void() +
+  coord_map(projection = "gilbert", xlim = c(-180, 180)) +
+  scale_fill_viridis_c()
+```
+
+When looking at projection = "globular" we see that Greenland and Africa look to be their respective sizes with Greenland being much smaller than Africa. But when we look at projection = "gilbert' we see that Greenland is now much bigger with respect to Africa. In "globular" Greenland likely could fit into Africa 14 times but it is unlikely to be able to do the same in "gilbert".
+
+
+
+
+```{r}
+library(plotly)
+plot <- ggplot(data = world_full,
+            mapping = aes(x = long, y = lat,
+                          group = group, label = Country)) +
+  geom_polygon(color = "black", aes(fill = LifeExpectancy)) +
+  theme_void() +
+  coord_map(projection = "gilbert", xlim = c(-180, 180)) +
+  scale_fill_viridis_c()
+ggplotly(plot, tooltip = "label")
+```
