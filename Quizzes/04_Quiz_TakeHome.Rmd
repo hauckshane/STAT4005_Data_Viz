@@ -1,0 +1,48 @@
+---
+title: "04_Quiz_TakeHome"
+author: "Shane Hauck"
+date: "2/15/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+“All work presented is my own, and I have followed all rules for collaboration.”
+- Shane Hauck
+
+
+Use the leaflet package and the us.cities data set from the maps package to make a Zoom-able map of the 50 U.S. capital cities. When you click on a marker for a capital city, both the city name and state as well as the pop (population) should be displayed.
+
+Note that, in the us.cities data set, state capitals are given a value of 2 in the capital variable.
+
+A second note is that if you cannot figure out how to get two “things” (in this case name and population) to display in Leaflet, you would just lose a single point for the quiz (so don’t spend too much time on that part unless you are inclined to do so).
+
+```{r}
+library(tidyverse)
+library(maps)
+library(leaflet)
+```
+
+
+```{r}
+capitals_df <- maps::"us.cities" %>% filter(capital == 2)
+```
+
+```{r}
+content <- capitals_df %>%
+  mutate(popup = paste("Capital:", capitals_df$name, "<br>",
+                       "Population:", capitals_df$pop, "<br>"))
+```
+
+```{r}
+capital_map <- leaflet(capitals_df) %>%
+  setView(lng = -98.583, lat = 39.833, zoom = 3) %>%
+  addTiles() %>%
+  addProviderTiles(providers$Wikimedia) %>%
+  addMarkers(lng = capitals_df$long, lat = capitals_df$lat,
+             clusterOptions = markerClusterOptions(),
+             popup = content$popup)
+capital_map
+```
