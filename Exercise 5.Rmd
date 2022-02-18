@@ -1,0 +1,24 @@
+---
+title: "Exercises 5"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Section 9.1
+
+Exercise 1. What makes the app given in the first tab interactive? In other words, what is a user allowed to change in the app?
+
+In the app the user is able to change the scale of things on the left side of the app. These include N, Interceopt, Slope and Standard Deviation of Resuidals of OLS Line of Best FIt. 
+
+Exercise 2. What are the outputs of the app? Are the outputs graphs, tables, or both?
+
+The inputs above then change the graph and the table below it based on a reaction from the inputs.
+
+Exercise 3. Write a short one paragraph description about the app you selected, including what the app allows the user to change, what the output is, and one interesting thing you found in the app.
+
+https://shiny.rstudio.com/gallery/nhl-play-by-play.html
+
+The app I choose was an app about NHL shots in games.The app featured an interactive shot chart which featured a diagram of a hockey rink with the location of each shot plotted on the diagram. The points size are based off of the goal proability where larger probilitys had bigger points. As you hovered over a point, it would display information about the shot like who shot, assisted and what the goal probability was. The app displayed a table a lists of games based on a season that you can choose. You just had to plug in the game id and it would allow you see the shots from that. There was also options of the bottom of the page. You could see the official report from the NHL website in one tab. In the next tab you could see the shot distance for each team. And finally (my favorite) you could see an animation of a line chart based on each teams goal probability throughout the game.
