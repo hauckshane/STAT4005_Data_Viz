@@ -1,0 +1,47 @@
+---
+title: "Quiz 4 in Class"
+author: "Shane Hauck"
+date: "2/16/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Question 1 (20 points). Examine the alcohol.csv data set that you may have used as an introductory data set in STAT/DATA 234:
+
+```{r}
+library(tidyverse)
+library(here)
+alcohol_df <- read_csv(here("data/alcohol.csv"))
+```
+
+The data set has the following variables on countries throughout the world:
+
+country, the name of the country
+beer_servings, the number of beer servings per person per year
+spirit_servings, the number of spirit servings per person per year
+wine_servings, the number of wine servings per person per year
+total_litres_of_pure_alcohol, the number of litres of pure alcohol consumed per person per year
+Construct a map of the beer_servings variable. You should choose an appropriate projection and change the default colour scheme of your map.
+
+```{r}
+world_df <- ggplot2::map_data("world")
+world_full <- left_join(world_df, alcohol_df, by = c("region" = "country"))
+```
+
+```{r}
+ggplot(data = world_full,
+            mapping = aes(x = long, y = lat,
+                          group = group)) +
+  geom_polygon(color = "black", aes(fill = beer_servings)) +
+  theme_void() +
+  coord_map(projection = "gilbert", xlim = c(-180, 180)) +
+  scale_fill_viridis_c()
+```
+
+
+Question 2 (5 points). Give an example of a question of interest about the alcohol data where you would want to construct a visualization other than a map to answer the question. What type of visualization would you construct instead?
+
+A question of interest about the alcohol data that you might want to construct a visualization other than a map could be something about looking at beer servings over time. To showcase the data over time you would likely want to use something the a line plot or scatter plot. 
