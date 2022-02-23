@@ -1,0 +1,67 @@
+---
+title: "05 Quiz Take Home"
+author: "Shane Hauck"
+date: "2/22/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Use the STAT 113 survey data set to explore the trend in the popularity of Facebook over time. Do this in 2 ways:
+
+```{r}
+library(tidyverse)
+stat113_survey <- read_csv("data/stat113_survey.csv")
+```
+
+
+(7 points). Construct a graph that uses the number of Facebook friends each student has.
+
+```{r}
+avg_FB <- stat113_survey %>% filter(is.na(Facebook) == FALSE) %>% group_by(time_year) %>%
+  mutate(avg_Facebook = mean(Facebook)) 
+
+plot_df <- left_join(stat113_survey,avg_FB)
+
+ggplot(plot_df, aes(x = time_year, y = Facebook)) +
+  geom_point(alpha = 0.1) +
+  geom_point(aes(y = avg_Facebook, color = "Average # of Facebook friends"), size = 3) +
+  scale_colour_manual(values = c("Average # of Facebook friends" = "red")) +
+  labs(y = "# of Facebook friends")
+  
+```
+
+
+
+(7 points). Construct a graph that uses the proportion of students that have Facebook (assuming that 0 friends means that the student does not have a Facebook account and more than 0 friends means that the student does have a Facebook account).
+
+```{r}
+plot2_df <- stat113_survey %>% mutate(Facebook = if_else(is.na(Facebook),
+                                             true = 0,
+                                             false = Facebook)) %>%
+  mutate(yesorno = if_else(Facebook > 0,
+                           true = "yes",
+                           false = "no")) %>%
+  group_by(time_year, yesorno) %>%
+  summarise(total = n()) %>%
+  ungroup() %>%
+  pivot_wider(names_from = yesorno, values_from = total) %>%
+  group_by(time_year) %>%
+  mutate(proportion_yes = yes / (yes + no), 
+         proportion_no = -(no / (yes + no)))
+
+ggplot(plot2_df, aes(x = time_year)) +
+  geom_col(aes(y = yes / 400, fill = "Number of students that have Facebook"), alpha = 0.4) +
+  geom_point(aes(y = proportion_yes, color = "Proportion of students that have Facebook"), size = 2) +
+  scale_y_continuous(
+    name = "proportion of students that have facebook",
+    sec.axis = sec_axis(~.*400, name = "number of students")
+  ) +
+  scale_colour_manual(values = c("Proportion of students that have Facebook" = "red")) +
+  scale_fill_manual(values = c("Number of students that have Facebook" = "black"))
+```
+
+
+1 point is provided for committing and pushing to GitHub correctly.
