@@ -1,6 +1,6 @@
 ---
 title: "qUIZ 6"
-author: "Shane Hauck"
+author: "Shane Hauck" 
 date: "3/2/2022"
 output: html_document
 ---
