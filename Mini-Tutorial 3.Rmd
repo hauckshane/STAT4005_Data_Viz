@@ -1,0 +1,102 @@
+---
+title: "Mini-Tutorial 3"
+author: "Shane Hauck"
+date: "3/7/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE, 
+	fig.width = 8
+)
+```
+
+__Mini-Tutorial 3: Expressing Uncertainty__
+
+The goal of this section is to generally show how graphs that express variability are typically better than graphs that show no variability whatsoever. Graphs that show no variability can be misleading to viewers as it might tell a skewed story. It is important that as creators of graphs we reveal all information that we have that makes the data and our findings what it is.
+
+In this example, I will be using this dataset featuring the top 100 NFL salarys in each position on given years. The variables of interest are:
+
+- year
+
+- Cornerback 
+
+- Defensive Lineman 
+
+- Linebacker 
+
+- Offensive Lineman 
+
+- Quarterback 
+
+- Running Back  
+
+- Safety 
+
+- Special Teamer 
+
+- Tight End
+
+- Wide Receiver
+
+```{r}
+library(tidyverse)
+nfl_salary <- read_csv("data/nfl_salary.csv")
+nfl_salary
+```
+
+First, I am going to show an example of a graph you should NOT make. The graph will be a bar plot showing the average salary per position.
+
+```{r}
+plot1 <- nfl_salary %>% pivot_longer(cols = c(2:11), names_to = "position", values_to = "salary") %>%
+  filter(is.na(salary) == FALSE) %>%
+  group_by(position) %>% 
+  summarise(mean_salary = mean(salary)) %>%
+  mutate(position = fct_reorder(position, mean_salary))
+ggplot(plot1, aes(x = position, y = mean_salary)) +
+  geom_col() +
+  coord_flip()
+```
+
+This is a bad example of a graph because the graph shows no variability as to where those averages come from. We are unable to see the range of salaries across the different positions and if there are any outliers skewing the means. Also, this dataset goes over the course of 7 years, this graph does nothing to show the potential changes in salary over time. According to the graph, you would always think that lineman are the highest paid players in the NFL, if you know the NFL you know that this probably isn't true. The role of lineman tend to not deviate too much outside the norm so many lineman get paid around the same amount. Also the total number of lineman who play at one time is greater than any other position, so it is likely that since this dataset features only the top 100 paid players per position, it is leaving out the lineman who make the least. A good graph would have shown this type of variability. We will make a plot like that next.
+
+To do this, we are going to make a point plot where all points in the data will be shown. We will fade the data points so the data points that overlap with each other will be darker showing a greater total number of players that have that salary. To continue to show the mean for each position, we will add a red dot that will represent the mean salary.
+
+```{r}
+plot2 <- nfl_salary %>% pivot_longer(cols = c(2:11), names_to = "position", values_to = "salary") %>%
+  filter(is.na(salary) == FALSE) %>%
+  group_by(position) %>% 
+  mutate(mean_salary = mean(salary)) %>%
+  ungroup() %>%
+  mutate(position = fct_reorder(position, mean_salary)) 
+ggplot(plot2, aes(x = position, y = salary)) +
+  geom_point(alpha = 0.1) +
+  geom_point(aes(y = mean_salary, colour = "mean salary"), size = 2) +
+  coord_flip() +
+  scale_colour_manual(values = c("mean salary" = "red"))
+```
+
+This graph is now a much better representation of the variability in dataset. You can now see that according to the data, lineman never get small amounts of money where as most other positions have players getting smaller values. You can now see that Quarterbacks for example, have players making a lot more money than the average but their average is dragged down by a large amount of players getting payed small amounts.
+
+In my opinion, despite the improvement, I feel that this graph still shows a lack of variability considering that the data is over the course of seven different years. To show this variability, I am going to facet the graph by the year.
+
+```{r}
+plot3 <- nfl_salary %>% pivot_longer(cols = c(2:11), names_to = "position", values_to = "salary") %>%
+  filter(is.na(salary) == FALSE) %>%
+  group_by(position, year) %>% 
+  mutate(mean_salary = mean(salary)) %>%
+  ungroup() %>%
+  mutate(position = fct_reorder(position, mean_salary)) 
+
+ggplot(plot3, aes(x = position, y = salary)) +
+  geom_point(alpha = 0.1) +
+  geom_point(aes(y = mean_salary, colour = "mean salary"), size = 2) +
+  coord_flip() +
+  scale_colour_manual(values = c("mean salary" = "red")) +
+  facet_wrap(~year)
+```
+
+Since this dataset is so large and features so many points in the same areas, I feel that the faceted graph better shows certain trends in different years for the positions. You could likely argue that this is overkill but if the goal is to tell the whole story of the data, it is better to over-show the variability than under-show the variability.

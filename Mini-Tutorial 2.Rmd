@@ -1,0 +1,117 @@
+---
+title: "Mini-Tutorial 2"
+author: "Shane Hauck"
+date: "3/8/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+__Mini-Tutorial 2: Mapping__
+
+The purpose of this tutorial is to show how an individual can make an interactive map that can give viewers a different perspective of the data. Maps are particularly useful when showing data over a certain area. 
+
+```{r}
+library(tidyverse)
+```
+
+
+In this example I will be using a dataset gotten from Mikanbu on Github featuring countries GDP values in certain years.
+
+```{r}
+urlfile = "https://raw.githubusercontent.com/datasets/gdp/master/data/gdp.csv"
+world_gdp <- read_csv(url(urlfile))
+```
+
+The variables of interest are:
+
+- Country Name
+
+- Year
+
+- Value
+
+I will be making an interactive map of Europe and the color fill of each country will be determined by the value of the GDP in the year 2001.
+
+Since we are only focused about the year 2001, filter the dataset so it only features that year.
+
+```{r}
+world_gdp <- world_gdp %>% filter(Year == 2001)
+```
+
+
+To get a dataset of European countries import this dataset which was gotten from ajturner on github.
+
+```{r}
+urlfile = "https://raw.githubusercontent.com/ajturner/acetate/master/places/Countries-Europe.csv"
+eucon <- read_csv(url(urlfile))
+```
+
+Join the two datasets so it only has European countries.
+
+```{r}
+eu_gdp <- left_join(eucon, world_gdp, by = c("name" = "Country Name"))
+```
+
+
+Now it's time to map the continent of Europe. The maps package contains pre-“drawn” maps for many of these areas. First load in the data points that draw the borders for the world map.
+
+```{r}
+## install.packages("maps")
+library(maps)
+
+world_df <- ggplot2::map_data("world")
+```
+
+Then join the world dataset and the european gdp dataset we made earlier so it only features European countries.
+
+```{r}
+eu_df <- left_join(eu_gdp, world_df, by = c("name" = "region"))
+```
+
+Next to physically draw the map we use ggplot, geom_polygon() and a group aes() to tell r how to draw the boundaries. 
+
+```{r}
+ggplot(eu_df, aes(x = long, y = lat, group = group)) +
+  geom_polygon()
+```
+
+You may notice that there are some not-so-great things about the default map (ie. the aspect ratio, the grid lines behind the map, etc). To fix some of these issues you can use things like projections in coord_map() to keep the accurate shape of the map without scaling issues and theme_void() to get rid of all the extra stuff behind the map. 
+
+```{r}
+ggplot(eu_df, aes(x = long, y = lat, group = group)) +
+  geom_polygon() +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  theme_void()
+```
+
+Next we will color each separate country by GDP value.
+
+```{r}
+ggplot(eu_df, aes(x = long, y = lat, group = group)) +
+  geom_polygon(colour = "black", aes(fill = Value)) +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  theme_void() +
+  scale_fill_viridis_c()
+```
+
+The final part of this tutorial is to show how to make the map interactive. In this example, we are going to make it so when you hover over a country on the map it will display the country as well as the GDP value. To do this we will use the plotly package.
+
+```{r}
+library(plotly)
+plot <- ggplot(eu_df, aes(x = long, y = lat, group = group,
+                          labeln = name,
+                          labelb = Value)) +
+  geom_polygon(colour = "black", aes(fill = Value)) +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  theme_void() +
+  scale_fill_viridis_c()
+
+ggplotly(plot, tooltip = c("labeln", "labelb"))
+```

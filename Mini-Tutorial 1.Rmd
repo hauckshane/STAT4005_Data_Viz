@@ -1,0 +1,187 @@
+---
+title: "Mini-Tutorial 1"
+author: "Shane Hauck"
+date: "3/7/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+“All work presented is my own. I have not communicated with or worked with anyone else on this exam.”
+- Shane Hauck
+
+__Mini-Tutorial 1: Data Visualization Concepts__
+
+The goal of this tutorial is to help the reader get an understanding of data visualization concepts and why they are important when making data visualizations. This tutorial will be split up into three different sections: Grammar of Graphics; Edges, Contrasts and Colors; and Problems of Honesty and Good Judgment.
+
+```{r}
+library(tidyverse)
+```
+
+To evaluate this topic we will use this professor evaluation dataset.
+
+```{r}
+evals_prof_S21 <- read_csv("data/evals_prof_S21.csv")
+evals_prof_S21
+```
+
+The variables of interest are: 
+
+- Term  
+
+- Question
+
+- Agree strongly (# of students)
+
+- Agree (# of students)
+
+- Agree Somewhat (# of students)
+
+- Neutral (# of students)
+
+- Disagree Somewhat (# of students)
+
+- Disagree (# of students)
+
+- Disagree Strongly (# of students)
+
+__Grammar of Graphics__
+
+According to Hadley Wickham in A Layered Grammar of Graphics , a Grammar of Graphics is
+
+“a tool that enables us to concisely describe the components of a graphic. Such a grammar allows us to move beyond named graphics (e.g., the “scatterplot”) and gain insight into the deep structure that underlies statistical graphics."
+
+There are seven parameters in a grammar of graphics:
+
+- DATA: the data set
+
+- MAPPINGS: an aesthetic mapping
+
+- GEOM_FUNCTION: a geometrical object
+
+- STAT: a statistical transformation
+
+- POSITION: a position adjustment
+
+- FACET_FUNCTION: subplots
+
+- COORDINATE_FUNCTION: a coordinate system
+
+These different parameters are ll useful because any plot can be described as a combination of all these things.
+
+When we use ggplot2 (and most implementations of the grammar of graphics), defaults for some of the seven parameters are provided so we don't have to manually specify them.
+
+We will look at the code from the plot being made below to see to see how each parameter plays a role in the creation of a plot.
+
+```{r}
+plot_df <- evals_prof_S21 %>%
+  pivot_longer(cols = c(4:10), names_to = "answer", values_to = "amount") 
+
+ggplot(data = plot_df, aes(x = answer, y = amount, fill = Term)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  facet_wrap(~ Question) +
+  coord_flip()
+```
+
+- DATA ("data = plot_df"): This is simply the dataset being used for the plot.  
+
+- MAPPINGS ("x = answer, y = amount, fill = Term"): This is everything that is specified in the aes() aesthetics function. They map variables in your dataset to plot characteristics. 
+
+- GEOM_FUNCTION ("geom_bar()"): This is the geometric object used to represent the data. There are many other options(geom_histogram(), geom_point(), geom_boxplot(), etc.) but in this example geom_bar() is used.
+
+- STAT ("stat = "identity""): Each geom has its own default statistical transformation. "identity" is the default STAT for geom_col() (as it is for many geom functions).  
+
+- POSITION ("position = "dodge""): By changing the position in a geom function you can alter how certain aspects of your graph are positioned.In this example, the default position of geom_bar() is to stack the bar plots and by setting position to "dodge" we are now putting the bars side by side. 
+
+- FACET_FUNCTION ("facet_wrap(~ Question)"): Faceting graphs is an easy way to group your graphs differently. In this example, facet_wrap() splits the graph up into individual plots of the different questions.
+
+- COORDINATE_FUNCTION ("coord_flip()"): COORDINATE_FUNCTION changes how the graph is displayed in terms of the x and y coordinates. This example uses coord_flip() to switch the x and y axis'. 
+
+
+__Colors__
+
+When using color in your data visualizations, it offers a way to contrast different groups of your data in way that, if done right, can make it easy for the viewer to see certain trends. So then what is the right way to use color? This part of the tutorial will talk about two main things to always keep in mind when using color in your visualizations.
+
+First, the way you use colors should make sense. What I mean by that is, when you use colors to represent things in your data, the colors should not be counterintuitive to what the data represents. For example, when looking at positive and negative things, positive things probably shouldn't be represented by something that is red and negative things probably should be represented by something that is green. It should be the other way around where negative things are red and positive things are green.
+
+Look at the professor evaluations for example.
+
+```{r}
+plot_df2 <- evals_prof_S21 %>%
+  pivot_longer(cols = c(4:10), names_to = "answer", values_to = "amount") %>%
+  filter(answer == "Agree" | answer == "Disagree") 
+
+ggplot(plot_df2, aes(x = Term, y = amount, fill = answer)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("red", "green"))
+```
+
+The above graph probably should not be used as it gives a counterintuitive meaning about agreeing and disagreeing. Agreeing  is generally a "better" thing and disagreeing is generally "worse", the perception of how red and green is used throughout society but those in those categories respectively. 
+
+```{r}
+ggplot(plot_df2, aes(x = Term, y = amount, fill = answer)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("green", "red"))
+```
+
+The above plot now makes much more sense to construct.
+
+The second thing that should be kept in mind when using color in data visualizations is color schemes. When choosing color schemes, we will want mappings from data to color that are not just numerically but also perceptually uniform. R gives color models and spaces that help this. Their are five different palettes that can be creates from R's colorspace library: Sequential Grayscale, Sequential Blue to Gray, Sequential Terrain, Diverging and Unordered Hues. Sequential scales should be used when you are showing something that is going from low to high. When we are representing a scale with a neutral mid-point, we want a diverging scale, where the steps away from the midpoint are perceptually even in both directions. Unordered Hues should be used in matter when it calls for unordered categorical variables. 
+
+When graphing the professor evaluations dataset for example, I would use a diverging scale to show case the answers from Agree Strongly to Disagree strongly withe Neutral being the neutral point.
+
+```{r}
+plot_df3 <- evals_prof_S21 %>% 
+  pivot_longer(cols = c(4:10), names_to = "answer", values_to = "amount") %>%
+  mutate(answer = fct_relevel(answer, c("Disagree Strongly",
+                                        "Disagree",
+                                        "Disagree Somewhat",
+                                        "Neutral",
+                                        "Agree Somewhat",
+                                        "Agree",
+                                        "Agree strongly"))) 
+
+ggplot(plot_df3, aes(x = answer, y = amount, fill = answer)) +
+  geom_col() +
+  coord_flip() +
+  scale_fill_brewer(palette = "RdYlGn")
+```
+
+
+__Problems of Honesty and Good Judgment__
+
+When creating visualizations of data, it is important to make decisions that are in the best interest in displaying the truth of the data. You do not want to be skewing what the viewer of the chart sees in a way that can lead to the misinterpreting the data. Being honest with your data is a bigger problem than can be solved by rules of thumb about making graphs, every graph is different and require different things to make sure the graph is portraying an honest message. 
+
+Look at this bar and dot plot of the professor evaluation data.
+
+```{r}
+plot_df4 <- evals_prof_S21 %>% 
+  pivot_longer(cols = c(4:10), names_to = "answer", values_to = "amount") %>%
+  filter(answer == "Disagree Strongly" | answer == "Disagree" | answer == "Disagree Somewhat") %>%
+  mutate(answer = fct_relevel(answer, c("Disagree Strongly",
+                                        "Disagree",
+                                        "Disagree Somewhat"))) %>%
+  group_by(answer) %>%
+  mutate(total = sum(amount))
+  
+
+ggplot(plot_df4, aes(x = answer, y = amount)) +
+  geom_col() +
+  coord_flip()
+
+ggplot(plot_df4, aes(x = answer, y = total)) +
+  geom_point() + 
+  coord_flip()
+```
+
+The two graphs above tell the same information but in different ways. The difference that could potentially accidentally wrongly skew a viewers perspective of the data is the fact of where the numeric coordinate starts. In this case, it is probably true that bar charts should generally include a zero baseline given that bars encode their variables as lengths. That being said, it might be a mistake to think that a dot plot was by the same token deliberately misleading, just because it kept itself to the range of data. 
+
+So which one is better? It is difficult to give a determined answer, because the reasons for preferring one type of scaling over another often depend on how frequently individuals consciously try to mislead others by preferring one sort over another. One could say that there is more to be in favor of showing the data over the range we observe it, rather than forcing every scale to encompass its lowest and highest theoretical value. Others would say that visualizations would be pointless if it was mandatory to include a zero point on the x or y axis. That being said, some people will go out of their way to restrict the scales they display in a way that makes their argument look better, no matter the intention. 
+
+As a data creator, it is your duty to make graphs that you believe are as honest and true to the data as they can be. It is important to stay vigilant when creating and looking at charts to make sure your viewpoints and perspective are not being skewed in a malicious way.

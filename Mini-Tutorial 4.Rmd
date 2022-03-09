@@ -1,0 +1,109 @@
+---
+title: "Mini-Tutorial 4"
+author: "Shane Hauck"
+date: "3/7/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+__Mini-Tutorial 4: shiny__
+
+The goal of this tutorial is to give an introduction into creating shiny applications. Shiny is an R package that is used to make interactive web apps. The interactive ability of the apps allows users to explore data in an easy and efficient way. 
+
+To journey through the world that is Shiny we will use this gun violence dataset. THe variables of interest are:
+
+- state
+
+- mortality_rate
+
+- ownership_rate
+
+- region
+
+```{r}
+library(tidyverse)
+gun_violence_us <- read_csv("data/gun_violence_us.csv")
+gun_violence_us
+```
+
+
+__Introduction to Shiny__
+
+The goal of a shiny app that we are going to try and make is an interactive graph that will take user input that will choose a state and it will display a bar plot containing mortality and ownership rate for that state.
+
+```{r}
+## install.packages("shiny")
+```
+
+A good shortcut to creating the "bones" of a shiny app is to type shinyapp into an R chunk and clicking on the shinyapp snippet option. Doing so should create
+
+```{r}
+library(shiny)
+
+ui <- fluidPage(
+  
+)
+
+server <- function(input, output, session) {
+  
+}
+
+shinyApp(ui, server)
+```
+
+You can now see a few different components of what makes up a shiny app: User Interface (ui), a server function, and a line that will eventually run the app with the shinyApp() function. If you run each line above a blank webpage should appear. Close the window and the program should stop (or you can click the STOP button in the upper-right corner of the console window). 
+
+To best understand what is going to happen next, it is worth it to take a look at the shiny cheatsheet (https://shiny.rstudio.com/images/shiny-cheatsheet.pdf) and continue to look for the various functions, both inputs and outputs, as you continue to read through this example. 
+
+The ui manages what the user of the app controls. This is where you specify what the inputs should be as well as any outputs that will potentially be shown.
+
+```{r}
+ui <- fluidPage(
+  sidebarLayout(
+    sidebarPanel(selectInput("statechoice", label = "Choose a State",
+                             choices = levels(factor(gun_violence_us$state)))),
+    mainPanel(tableOutput("s_table"))
+  )
+)
+```
+
+The server function is the backbone of the shinyapp. This is where your function __reacts__ based on the inputs. This is where you are more likely to put more of your code that will create various things (plots, tables, etc.). 
+
+```{r}
+server <- function(input, output, session) {
+  
+  state_reactive_df <- reactive({
+    df_stats <- gun_violence_us %>% filter(state == input$statechoice) 
+  })
+  
+  state_table <- reactive({
+    state_reactive_df() %>% select(c(2:3))
+  })
+  
+  output$s_table <- renderTable({
+    state_table()
+  })
+}
+```
+
+After running the ui and server you can now run the shinyApp() functions and your app should run.
+
+```{r}
+shinyApp(ui, server)
+```
+
+
+__Introduction to Reactivity__
+
+When code is being run in shiny apps, it gets run a little differently than your typical .Rmd files and in .R scripts. The code in those is being run from beginning to end, meanwhile in a shiny app, it does not and is instead running code through a process called reactive execution. 
+
+All reactivity comes through the server function. Where the ui is a a simple object because every user gets the same HTML, the sever is more complicated because every users needs to get an independent version of the app. 
+
+For this independence to happen, Shiny invokes your server() function each time a new session starts. When the server function is called it creates a new local environment that is independent and in a unique state isolating the variables created inside the function. 
+
+Server functions take three parameters: input, output, and session. Input reflects what is happening in the browser and as it contains all the input data sent from said browser. Output is similar to input but the main difference is that you use it for sending output instead of receiving input. You will always use the output object in accordance with a render function. 
+
+When inputs and outputs are combined is when Shiny is used to its greatest effect. The big idea in shiny is that you don't need to tell an output when to update because Shiny automatically figures it out for you using reactivity. 
